@@ -117,5 +117,7 @@
 </tbody>
     </table>
 </div>
+<br><br>
+<a href="logout.php">Log Out</a>
 </body>
 </html>
