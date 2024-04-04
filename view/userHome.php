@@ -6,7 +6,7 @@
 
         <title>Home | INV MNG SYS</title>
 
-        <link href="assets/css/styles.css" rel="stylesheet" />
+        <link href="../assets/css/styles.css" rel="stylesheet" />
     </head>
 
     <body>
@@ -21,8 +21,8 @@
                 <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="view/login.php">Sign In</a></li>
-                        <li class="nav-item"><a class="nav-link" href="view/register.php">Register</a></li>
+                        <li class="nav-item"><a class="nav-link" href="login.php">Sign In</a></li>
+                        <li class="nav-item"><a class="nav-link" href="register.php">Register</a></li>
                     </ul>
                 </div>
             </div>

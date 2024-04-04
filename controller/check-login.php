@@ -20,13 +20,13 @@
             $num=mysqli_num_rows($result);
             if($num>0){
         $_SESSION['email']= $email;
-        header("location: ../view/home.php");
+        header("location: ../view/adminPanel.php");
         }
         elseif($result1){
             $num=mysqli_num_rows($result1);
             if($num>0){
         $_SESSION['email']= $email;
-        header("location: ../view/index.php");
+        header("location: ../view/userHome.php");
 
         }
         
