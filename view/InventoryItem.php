@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,61 +11,58 @@
     <a class="btn btn-primary" href="createItems.php" role="button">Create</a> 
     <br>
     <table class="table">
-<thead>
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Description</th>
-<th>IMG</th>
-<th>Quantity</th> 
-<th>Action</th>
-</tr>
-</thead>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>IMG</th>
+                <th>Quantity</th> 
+                <th>Action</th>
+            </tr>
+        </thead>
 
-<tbody>
-    <?php
-    
-    include("../model/db.php");
-    $con = connection();
+        <tbody>
+            <?php
+            include("../model/db.php");
+            $con = connection();
 
-    //check connection
-    if($con->connect_error){
-        die("Connection failed: ".$con->connect_error);
-    }
+            // Check connection
+            if ($con->connect_error) {
+                die("Connection failed: " . $con->connect_error);
+            }
 
-    //read all from DB table
-    $sql = "SELECT * FROM items";
-    $result = $con->query($sql);
+            // Read all records from DB table
+            $sql = "SELECT * FROM items";
+            $result = $con->query($sql);
 
-    if(!$result){
-        die("Invalid query: " . $con->error);
-    }
+            if (!$result) {
+                die("Invalid query: " . $con->error);
+            }
 
-    //read data for each row
-    while($row = $result->fetch_assoc()){
-
-        echo "
-        <tr>
-        <td>{$row['id']}</td>
-        <td>{$row['name']}</td>
-        <td>{$row['description']}</td>
-        <td>{$row['img_path']}</td>
-        <td>{$row['quantity']}</td>
-        <td>
-        <a class=\"btn btn-primary btn-sm\" href=\"editItem.php?id={$row['id']}\">Edit</a>
-        <a class=\"btn btn-danger btn-sm\" href=\"deleteUser.php?id={$row['id']}\">Delete</a>
-
-        </td>
-        </tr>";
-    }
-    ?>
-   
-</tbody>
+            // Display data for each row
+            while ($row = $result->fetch_assoc()) {
+                ?>
+                <tr>
+                    <td><?php echo $row['id']; ?></td>
+                    <td><?php echo $row['name']; ?></td>
+                    <td><?php echo $row['description']; ?></td>
+                    <td><img src="<?php echo $row['img_path']; ?>" width="200" height="150"></td>
+                    <td><?php echo $row['quantity']; ?></td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" href="editItem.php?id=<?php echo $row['id']; ?>">Edit</a>
+                        <a class="btn btn-danger btn-sm" href="deleteitem.php?id=<?php echo $row['id']; ?>">Delete</a>
+                    </td>
+                </tr>
+                <?php
+            }
+            ?>
+        </tbody>
     </table>
 
     <div class="col-sm-3 d-grid">
-            <a class="btn btn-outline-primary" href="adminPanel.php" role="button">Go Back</a>
-        </div>
+        <a class="btn btn-outline-primary" href="adminPanel.php" role="button">Go Back</a>
+    </div>
     
 </body>
 </html>

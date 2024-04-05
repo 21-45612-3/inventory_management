@@ -1,49 +1,57 @@
 <?php
-
-
-
 $name = "";
 $description = "";
-$img_path = "";
-$quantity =0;
+$quantity = 0;
 
 $errormsg = "";
 $successmsg = "";
 
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST["name"];
     $description = $_POST["description"];
-    $img_path = $_POST["img_path"];
     $quantity = $_POST["quantity"];
 
-    if(empty($name) || empty($description) || empty($img_path) || empty($quantity)){
+    // File upload handling
+    $targetDir = "../assets/upload/";
+    $fileName = basename($_FILES["img_file"]["name"]);
+    $targetFilePath =  $targetDir . $fileName ;
+    $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
+    $allowedTypes = array('jpg', 'png', 'jpeg', 'gif');
+
+    if (empty($name) || empty($description) || empty($quantity)) {
         $errormsg = "All the fields are required";
+    } elseif (!in_array($fileType, $allowedTypes)) {
+        $errormsg = "Sorry, only JPG, JPEG, PNG, & GIF files are allowed to upload.";
     } else {
-        
-
+        // Database connection and insertion
         include("../model/db.php");
-    $con = connection();
+        $con = connection();
 
-    $sql = "INSERT INTO items(name, description, img_path, quantity) VALUES('$name', '$description', '$img_path', '$quantity')";
-    $result = $con->query($sql);
+        if (move_uploaded_file($_FILES["img_file"]["tmp_name"], $targetFilePath)) {
 
-    if(!$result){
-        $errormsg = "All the fields are required";
-        
-    }
 
-        $name = "";
-        $description = "";
-        $img_path = "";
-        $quantity = 0;
+            $sql = "INSERT INTO items (name, description, img_path, quantity) VALUES ('$name', '$description', '$targetFilePath', '$quantity')";
+            if ($con->query($sql)) {
+                $successmsg = "Item added successfully.";
 
-        $successmsg = "Item added";
-
-        header("location: InventoryItem.php");
-        exit;
+               
+                // Reset form values
+                $name = "";
+                $description = "";
+                $quantity = 0;
+                header("Location: InventoryItem.php"); 
+            } else {
+                $errormsg = "Error inserting into database: " . $con->error;
+            }
+        } else {
+            $errormsg = "Sorry, there was an error uploading your file.";
+        }
     }
 }
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -79,7 +87,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     }
 ?>
 
-<form action="" method="post">
+<form action="" method="post" enctype="multipart/form-data">
 
     <div class="row mb-3">
         <label class="col-sm-3 col-form-label">Name</label>
@@ -95,12 +103,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         </div>
     </div>
 
+
+
+    
     <div class="row mb-3">
         <label class="col-sm-3 col-form-label">IMG</label>
         <div class="col-sm-6">
-            <input type="text" class="form-control" name="img_path" placeholder="img path" value="<?php echo $img_path; ?>">
+            <input type="file" class="form-control" name="img_file" placeholder="img path">
         </div>
     </div>
+ 
+
+
 
     <div class="row mb-3">
         <label class="col-sm-3 col-form-label">Quantity</label>

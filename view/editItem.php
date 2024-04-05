@@ -43,16 +43,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $id = $_POST["id"];
     $name = $_POST["name"];
     $description = $_POST["description"];
-    $img_path = $_POST["img_path"];
     $quantity = $_POST["quantity"];
 
-    if (empty($name) || empty($description) || empty($img_path) || empty($quantity)) {
+    $targetDir = "../assets/upload/";
+    $fileName = basename($_FILES["img_file"]["name"]);
+    $targetFilePath =  $targetDir . $fileName ;
+    $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
+    $allowedTypes = array('jpg', 'png', 'jpeg', 'gif');
+
+    if (empty($name) || empty($description) || empty($quantity)) {
         $errormsg = "All the fields are required";
+    } elseif (!in_array($fileType, $allowedTypes)) {
+        $errormsg = "Sorry, only JPG, JPEG, PNG, & GIF files are allowed to upload.";
     } else {
         
+
+        if (move_uploaded_file($_FILES["img_file"]["tmp_name"], $targetFilePath)) {
+
         $sql = "UPDATE items SET name = ?, description = ?, img_path = ?, quantity = ? WHERE id = ?";
         $stmt = $con->prepare($sql);
-        $stmt->bind_param("sssii", $name, $description, $img_path, $quantity, $id);
+        $stmt->bind_param("sssii", $name, $description, $targetFilePath, $quantity, $id);
         if ($stmt->execute()) {
             $successmsg = "Updated successfully";
             $stmt->close();
@@ -61,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         } else {
             $errormsg = "Failed to update";
         }
-    }
+    }}
 }
 ?>
 
@@ -98,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         }
         ?>
 
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<?php echo $id; ?>">
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Name</label>
@@ -117,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">IMG</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" name="img_path" value="<?php echo $img_path; ?>">
+                    <input type="file" class="form-control" name="img_file">
                 </div>
             </div>
 
